@@ -95,6 +95,18 @@
       "completed": "Completed"
     }
   },
+  "task": {
+    "title": "Tasks",
+    "new": "New task",
+    "name": "Task name",
+    "hours": "Estimated hours",
+    "status": "Status",
+    "statuses": {
+      "open": "Open",
+      "in_progress": "In progress",
+      "done": "Done"
+    }
+  },
   "scheduler": {
     "title": "Scheduler",
     "week": "Week",

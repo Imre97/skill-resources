@@ -13,7 +13,6 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   return res.json();
 }
 
-// --- Developers ---
 export const api = {
   developers: {
     list: (params?: { team?: string; skill_id?: number; min_score?: number }) => {
@@ -21,7 +20,8 @@ export const api = {
       return request<Developer[]>(`/developers${q ? `?${q}` : ""}`);
     },
     get: (id: number) => request<DeveloperWithSkills>(`/developers/${id}`),
-    create: (body: DeveloperCreate) => request<Developer>("/developers", { method: "POST", body: JSON.stringify(body) }),
+    create: (body: DeveloperCreate) =>
+      request<Developer>("/developers", { method: "POST", body: JSON.stringify(body) }),
     update: (id: number, body: Partial<DeveloperCreate>) =>
       request<Developer>(`/developers/${id}`, { method: "PATCH", body: JSON.stringify(body) }),
     delete: (id: number) => request<void>(`/developers/${id}`, { method: "DELETE" }),
@@ -29,24 +29,43 @@ export const api = {
       request<void>(`/developers/${id}/skills`, { method: "PUT", body: JSON.stringify({ skills }) }),
   },
   skills: {
-    list: (category?: string) => request<Skill[]>(`/skills${category ? `?category=${category}` : ""}`),
-    create: (body: SkillCreate) => request<Skill>("/skills", { method: "POST", body: JSON.stringify(body) }),
+    list: (category?: string) =>
+      request<Skill[]>(`/skills${category ? `?category=${category}` : ""}`),
+    create: (body: SkillCreate) =>
+      request<Skill>("/skills", { method: "POST", body: JSON.stringify(body) }),
+    update: (id: number, body: Partial<SkillCreate>) =>
+      request<Skill>(`/skills/${id}`, { method: "PATCH", body: JSON.stringify(body) }),
     delete: (id: number) => request<void>(`/skills/${id}`, { method: "DELETE" }),
   },
   projects: {
-    list: (status?: string) => request<Project[]>(`/projects${status ? `?status=${status}` : ""}`),
+    list: (status?: string) =>
+      request<Project[]>(`/projects${status ? `?status=${status}` : ""}`),
     get: (id: number) => request<Project>(`/projects/${id}`),
-    create: (body: ProjectCreate) => request<Project>("/projects", { method: "POST", body: JSON.stringify(body) }),
+    create: (body: ProjectCreate) =>
+      request<Project>("/projects", { method: "POST", body: JSON.stringify(body) }),
     update: (id: number, body: Partial<ProjectCreate>) =>
       request<Project>(`/projects/${id}`, { method: "PATCH", body: JSON.stringify(body) }),
     delete: (id: number) => request<void>(`/projects/${id}`, { method: "DELETE" }),
-    getRequirements: (id: number) => request<SkillRequirement[]>(`/projects/${id}/requirements`),
+    listTasks: (id: number) => request<Task[]>(`/projects/${id}/tasks`),
+    createTask: (id: number, body: TaskCreate) =>
+      request<Task>(`/projects/${id}/tasks`, { method: "POST", body: JSON.stringify(body) }),
+    getRequirements: (id: number) =>
+      request<SkillRequirement[]>(`/projects/${id}/requirements`),
     upsertRequirements: (id: number, body: SkillRequirementCreate[]) =>
-      request<SkillRequirement[]>(`/projects/${id}/requirements`, { method: "PUT", body: JSON.stringify(body) }),
+      request<SkillRequirement[]>(`/projects/${id}/requirements`, {
+        method: "PUT",
+        body: JSON.stringify(body),
+      }),
+  },
+  tasks: {
+    get: (id: number) => request<Task>(`/tasks/${id}`),
+    update: (id: number, body: Partial<TaskCreate>) =>
+      request<Task>(`/tasks/${id}`, { method: "PATCH", body: JSON.stringify(body) }),
+    delete: (id: number) => request<void>(`/tasks/${id}`, { method: "DELETE" }),
   },
 };
 
-// --- Types (mirror backend schemas) ---
+// --- Types ---
 export interface Developer {
   id: number;
   name: string;
@@ -110,6 +129,23 @@ export interface ProjectCreate {
   start_date?: string;
   end_date?: string;
   color?: string;
+}
+
+export interface Task {
+  id: number;
+  project_id: number;
+  title: string;
+  description: string | null;
+  estimated_hours: number;
+  status: "open" | "in_progress" | "done";
+  created_at: string;
+}
+
+export interface TaskCreate {
+  title: string;
+  description?: string;
+  estimated_hours?: number;
+  status?: "open" | "in_progress" | "done";
 }
 
 export interface SkillRequirement {
