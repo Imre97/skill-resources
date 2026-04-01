@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from database import get_db
 from schemas.project import Project, ProjectCreate, ProjectUpdate, SkillRequirement, SkillRequirementCreate
+from schemas.task import Task, TaskCreate
 
 router = APIRouter(prefix="/api/projects", tags=["projects"])
 
@@ -58,6 +59,30 @@ def get_requirements(project_id: int):
             "SELECT * FROM project_skill_requirements WHERE project_id=?", (project_id,)
         ).fetchall()
         return [dict(r) for r in rows]
+
+@router.get("/{project_id}/tasks", response_model=list[Task])
+def list_tasks(project_id: int):
+    with get_db() as conn:
+        row = conn.execute("SELECT id FROM projects WHERE id=?", (project_id,)).fetchone()
+        if not row:
+            raise HTTPException(404, "Project not found")
+        rows = conn.execute("SELECT * FROM tasks WHERE project_id=?", (project_id,)).fetchall()
+        return [dict(r) for r in rows]
+
+
+@router.post("/{project_id}/tasks", response_model=Task, status_code=201)
+def create_task(project_id: int, body: TaskCreate):
+    with get_db() as conn:
+        row = conn.execute("SELECT id FROM projects WHERE id=?", (project_id,)).fetchone()
+        if not row:
+            raise HTTPException(404, "Project not found")
+        cur = conn.execute(
+            "INSERT INTO tasks (project_id, title, description, estimated_hours, status) VALUES (?,?,?,?,?)",
+            (project_id, body.title, body.description, body.estimated_hours, body.status)
+        )
+        row = conn.execute("SELECT * FROM tasks WHERE id=?", (cur.lastrowid,)).fetchone()
+        return dict(row)
+
 
 @router.put("/{project_id}/requirements", response_model=list[SkillRequirement])
 def upsert_requirements(project_id: int, body: list[SkillRequirementCreate]):

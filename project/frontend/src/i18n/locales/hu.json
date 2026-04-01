@@ -95,6 +95,18 @@
       "completed": "Befejezett"
     }
   },
+  "task": {
+    "title": "Feladatok",
+    "new": "Új feladat",
+    "name": "Feladat neve",
+    "hours": "Becsült óra",
+    "status": "Státusz",
+    "statuses": {
+      "open": "Nyitott",
+      "in_progress": "Folyamatban",
+      "done": "Kész"
+    }
+  },
   "scheduler": {
     "title": "Scheduler",
     "week": "Hét",

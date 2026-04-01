@@ -1,6 +1,44 @@
+# Python
 __pycache__/
-*.pyc
+*.py[cod]
+*.pyo
+*.pyd
+.venv/
+venv/
+env/
+*.egg-info/
+.pytest_cache/
+
+# Adatbázis
 *.db
+*.sqlite3
+/data/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Frontend
 node_modules/
 dist/
-.env
+.vite/
+*.local
+
+# IDE
+.vscode/
+.idea/
+*.suo
+*.user
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Docker
+.docker/
+
+# Logs
+*.log
+logs/
