@@ -25,8 +25,6 @@
 | Build tool | Vite |
 | UI library | Shadcn/ui (Radix UI alapon) |
 | Szerver state / API | TanStack Query v5 |
-| Internacionalizáció | i18next + react-i18next |
-| Dark/Light mód | Tailwind CSS `dark` class + Zustand persist |
 | Globális state | Zustand |
 | Form validáció | Zod + React Hook Form |
 | Backend | FastAPI (Python) |
@@ -70,62 +68,6 @@ project/
 ├── .gitignore
 └── SPEC.md
 ```
-
----
-
-## Internacionalizáció – i18next
-
-Minden felhasználónak megjelenő szöveg fordítási kulcson keresztül jelenik meg. **Hardcoded magyar vagy angol szöveg a JSX-ben tilos.**
-
-### Struktúra
-
-```
-src/i18n/
-├── index.ts           ← i18next init (LanguageDetector + fallbackLng: "hu")
-└── locales/
-    ├── hu.json        ← magyar fordítások
-    └── en.json        ← angol fordítások
-```
-
-### Használat
-
-```tsx
-import { useTranslation } from "react-i18next";
-
-function MyComponent() {
-  const { t } = useTranslation();
-  return <h1>{t("developer.title")}</h1>;
-}
-```
-
-### Szabályok
-
-- Kulcsok névterekben szervezve: `nav.*`, `common.*`, `developer.*`, `skill.*`, `project.*` stb.
-- Interpoláció: `t("scheduler.overloadWarning", { hours: 10 })`
-- Új feature-höz mindig kerüljön a kulcs **mindkét** locale fájlba
-- Nyelvváltás: `i18n.changeLanguage("en")` – localStorage-ban perzisztált (`nexus-language` key)
-
----
-
-## Dark / Light mód
-
-Tailwind `darkMode: ["class"]` alapján működik – a `dark` class az `<html>` elemen van.
-
-### Témaváltás
-
-```ts
-import { useUIStore } from "@/stores/uiStore";
-const { theme, toggleTheme } = useUIStore();
-```
-
-- Az állapot `localStorage`-ban él (`nexus-ui` Zustand persist key)
-- Betöltéskor az `uiStore.ts` modul azonnal alkalmazza a mentett témát (flash-mentes)
-- Dark mode CSS változók az `index.css`-ben `.dark {}` blokk alatt
-
-### Szabályok
-
-- Soha ne használj `theme === "dark"` feltételt inline stílushoz – Tailwind `dark:` prefix elegendő
-- Komponensekben mindig `bg-background`, `text-foreground` stb. CSS változó alapú osztályokat használj, ne hardcoded `bg-white`/`bg-gray-900` párokat
 
 ---
 
