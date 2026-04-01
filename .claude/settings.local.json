@@ -7,7 +7,16 @@
       "Bash(pip install:*)",
       "Bash(py --version)",
       "Bash(py -m pip install fastapi==0.115.12 uvicorn[standard]==0.34.0 pydantic==2.11.2)",
-      "Bash(docker compose:*)"
+      "Bash(docker compose:*)",
+      "Bash(find \"C:/Skill&Resources/project/backend\" -type f)",
+      "Bash(find \"C:/Skill&Resources/project/frontend\" -type f)",
+      "Bash(npx tsc:*)",
+      "Bash(node_modules/.bin/tsc.cmd --noEmit)",
+      "Bash(cmd /c \"cd /d \"\"C:\\\\Skill&Resources\\\\project\\\\frontend\"\" && node_modules\\\\.bin\\\\tsc --noEmit 2>&1\")",
+      "Bash(cmd /c \"cd /d \\\\\"C:\\\\Skill&Resources\\\\project\\\\backend\\\\\" && .venv\\\\Scripts\\\\python.exe -c \\\\\"import main; import routers.tasks; import routers.projects; print\\('OK'\\)\\\\\" 2>&1\")",
+      "Bash(cmd /c \"cd /d \\\\\"C:\\\\Skill&Resources\\\\project\\\\backend\\\\\" && .venv\\\\Scripts\\\\python.exe -m py_compile main.py routers/tasks.py routers/projects.py schemas/task.py && echo PYTHON_OK\" 2>&1)",
+      "Bash(python \"C:/Skill&Resources/project/backend/main.py\")",
+      "Bash(\"C:/Skill&Resources/project/backend/.venv/Scripts/python.exe\" -m py_compile \"C:/Skill&Resources/project/backend/main.py\" \"C:/Skill&Resources/project/backend/routers/tasks.py\" \"C:/Skill&Resources/project/backend/routers/projects.py\" \"C:/Skill&Resources/project/backend/schemas/task.py\")"
     ]
   }
 }
