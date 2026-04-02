@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { type Project } from "@/lib/api";
-import { format } from "date-fns";
+import { format, isValid } from "date-fns";
 
 interface ProjectCardProps {
   project: Project;
@@ -19,6 +19,12 @@ const statusVariant: Record<string, "default" | "secondary" | "outline" | "destr
   on_hold: "outline",
   completed: "outline",
 };
+
+function formatDate(d: string | null): string {
+  if (!d) return "?";
+  const date = new Date(d);
+  return isValid(date) ? format(date, "yyyy.MM.dd") : "?";
+}
 
 export default React.memo(function ProjectCard({ project, onDelete }: ProjectCardProps) {
   const { t } = useTranslation();
@@ -60,10 +66,9 @@ export default React.memo(function ProjectCard({ project, onDelete }: ProjectCar
             {t(`project.statuses.${project.status}`)}
           </Badge>
           {(project.start_date || project.end_date) && (
-            <span className="flex items-center gap-1 text-xs text-muted-foreground">
+            <span className="flex items-center gap-1 text-xs text-muted-foreground whitespace-nowrap">
               <CalendarRange className="h-3 w-3" />
-              {project.start_date ? format(new Date(project.start_date), "yyyy.MM.dd") : "?"} –{" "}
-              {project.end_date ? format(new Date(project.end_date), "yyyy.MM.dd") : "?"}
+              {formatDate(project.start_date)} – {formatDate(project.end_date)}
             </span>
           )}
         </div>

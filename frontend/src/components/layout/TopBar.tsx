@@ -26,7 +26,10 @@ export default function TopBar() {
   const { t, i18n } = useTranslation();
   const { theme, toggleTheme } = useUIStore();
 
-  const titleKey = PAGE_TITLE_KEYS[pathname] ?? "nav.dashboard";
+  const matchedPath = Object.keys(PAGE_TITLE_KEYS).find(
+    (key) => pathname === key || pathname.startsWith(key + "/")
+  );
+  const titleKey = matchedPath ? PAGE_TITLE_KEYS[matchedPath] : "nav.dashboard";
 
   return (
     <header className="h-14 border-b border-border flex items-center justify-between px-6 bg-background shrink-0 shadow-sm">
@@ -61,9 +64,20 @@ export default function TopBar() {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        <Button variant="ghost" size="icon" title={t("notifications.title")}>
-          <Bell className="h-4 w-4" />
-        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon" title={t("notifications.title")}>
+              <Bell className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-64">
+            <DropdownMenuLabel>{t("notifications.title")}</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <div className="py-6 text-center text-sm text-muted-foreground">
+              {t("notifications.empty")}
+            </div>
+          </DropdownMenuContent>
+        </DropdownMenu>
 
         <div className="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center text-xs font-medium text-primary ml-1">
           U

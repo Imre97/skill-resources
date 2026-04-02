@@ -63,6 +63,34 @@ export const api = {
       request<Task>(`/tasks/${id}`, { method: "PATCH", body: JSON.stringify(body) }),
     delete: (id: number) => request<void>(`/tasks/${id}`, { method: "DELETE" }),
   },
+  assignments: {
+    list: (params?: { developer_id?: number; project_id?: number; from_date?: string; to_date?: string }) => {
+      const q = new URLSearchParams(params as Record<string, string>).toString();
+      return request<Assignment[]>(`/assignments${q ? `?${q}` : ""}`);
+    },
+    create: (body: AssignmentCreate) =>
+      request<Assignment>("/assignments", { method: "POST", body: JSON.stringify(body) }),
+    update: (id: number, body: AssignmentUpdate) =>
+      request<Assignment>(`/assignments/${id}`, { method: "PATCH", body: JSON.stringify(body) }),
+    delete: (id: number) => request<void>(`/assignments/${id}`, { method: "DELETE" }),
+  },
+  leaves: {
+    list: (params?: { developer_id?: number; from_date?: string; to_date?: string }) => {
+      const q = new URLSearchParams(params as Record<string, string>).toString();
+      return request<Leave[]>(`/leaves${q ? `?${q}` : ""}`);
+    },
+    create: (body: LeaveCreate) =>
+      request<Leave>("/leaves", { method: "POST", body: JSON.stringify(body) }),
+    update: (id: number, body: LeaveUpdate) =>
+      request<Leave>(`/leaves/${id}`, { method: "PATCH", body: JSON.stringify(body) }),
+    delete: (id: number) => request<void>(`/leaves/${id}`, { method: "DELETE" }),
+  },
+  capacity: {
+    get: (from_date: string, to_date: string) =>
+      request<CapacityDay[]>(`/capacity?from_date=${from_date}&to_date=${to_date}`),
+    overloaded: (from_date: string, to_date: string) =>
+      request<OverloadedDeveloper[]>(`/capacity/overloaded?from_date=${from_date}&to_date=${to_date}`),
+  },
 };
 
 // --- Types ---
@@ -160,4 +188,68 @@ export interface SkillRequirementCreate {
   skill_id: number;
   min_score: number;
   weight?: number;
+}
+
+export interface Assignment {
+  id: number;
+  developer_id: number;
+  task_id: number;
+  start_date: string;
+  end_date: string;
+  hours_per_day: number;
+  note: string | null;
+  created_at: string;
+}
+
+export interface AssignmentCreate {
+  developer_id: number;
+  task_id: number;
+  start_date: string;
+  end_date: string;
+  hours_per_day?: number;
+  note?: string;
+}
+
+export interface AssignmentUpdate {
+  start_date?: string;
+  end_date?: string;
+  hours_per_day?: number;
+  note?: string;
+}
+
+export interface Leave {
+  id: number;
+  developer_id: number;
+  start_date: string;
+  end_date: string;
+  leave_type: "vacation" | "sick" | "other";
+  note: string | null;
+}
+
+export interface LeaveCreate {
+  developer_id: number;
+  start_date: string;
+  end_date: string;
+  leave_type?: "vacation" | "sick" | "other";
+  note?: string;
+}
+
+export interface LeaveUpdate {
+  start_date?: string;
+  end_date?: string;
+  leave_type?: "vacation" | "sick" | "other";
+  note?: string;
+}
+
+export interface CapacityDay {
+  date: string;
+  developers: { developer_id: number; name: string; hours: number }[];
+  total_hours: number;
+}
+
+export interface OverloadedDeveloper {
+  developer_id: number;
+  name: string;
+  overloaded_days: { date: string; hours: number }[];
+  max_hours: number;
 }
